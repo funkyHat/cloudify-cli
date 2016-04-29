@@ -1031,41 +1031,72 @@ def parser_config():
             },
             'bootstrap': {
                 'help': 'Bootstrap a Cloudify Manager',
-                'arguments': {
-                    '-p,--blueprint-path':
-                        local_blueprint_path_argument(
-                                hlp='Path to a blueprint'
-                        ),
-                    '-i,--inputs': inputs_argument(
-                        hlp='Inputs file/string for a manager blueprint ({0}) '
-                            'This argument can be used multiple times.'
-                            .format(FORMAT_INPUT_AS_YAML_OR_DICT)
-                    ),
-                    '--keep-up-on-failure': {
-                        'dest': 'keep_up',
-                        'action': 'store_true',
-                        'help': 'If the bootstrap fails,'
-                                ' the Manager will remain running'
+                'sub_commands': {
+                    'simple': {
+                        'arguments': {
+                            '-i,--inputs': inputs_argument(
+                                hlp='Inputs file/string for a manager blueprint ({0}) '
+                                    'This argument can be used multiple times.'
+                                    .format(FORMAT_INPUT_AS_YAML_OR_DICT)
+                            ),
+                            '--skip-validations': {
+                                'dest': 'skip_validations',
+                                'action': 'store_true',
+                                'help': 'Run bootstrap without '
+                                        'validating resources prior to bootstrapping the manager'
+                            },
+                            '--validate-only': {
+                                'dest': 'validate_only',
+                                'action': 'store_true',
+                                'help': 'Run validations without '
+                                        'actually performing the bootstrap process'
+                            },
+                            '--install-plugins': install_plugins_argument(),
+                            '--task-retries': task_retries_argument(5),
+                            '--task-retry-interval': task_retry_interval_argument(30),
+                            '--task-thread-pool-size':
+                                task_thread_pool_size_argument()
+                        },
+                        'handler': cfy.bootstrap
                     },
-                    '--skip-validations': {
-                        'dest': 'skip_validations',
-                        'action': 'store_true',
-                        'help': 'Run bootstrap without '
-                                'validating resources prior to bootstrapping the manager'
-                    },
-                    '--validate-only': {
-                        'dest': 'validate_only',
-                        'action': 'store_true',
-                        'help': 'Run validations without '
-                                'actually performing the bootstrap process'
-                    },
-                    '--install-plugins': install_plugins_argument(),
-                    '--task-retries': task_retries_argument(5),
-                    '--task-retry-interval': task_retry_interval_argument(30),
-                    '--task-thread-pool-size':
-                        task_thread_pool_size_argument()
-                },
-                'handler': cfy.bootstrap
+                    'cloud': {
+                        'arguments': {
+                            '-p,--blueprint-path':
+                                local_blueprint_path_argument(
+                                        hlp='Path to a blueprint'
+                                ),
+                            '-i,--inputs': inputs_argument(
+                                hlp='Inputs file/string for a manager blueprint ({0}) '
+                                    'This argument can be used multiple times.'
+                                    .format(FORMAT_INPUT_AS_YAML_OR_DICT)
+                            ),
+                            '--keep-up-on-failure': {
+                                'dest': 'keep_up',
+                                'action': 'store_true',
+                                'help': 'If the bootstrap fails,'
+                                        ' the Manager will remain running'
+                            },
+                            '--skip-validations': {
+                                'dest': 'skip_validations',
+                                'action': 'store_true',
+                                'help': 'Run bootstrap without '
+                                        'validating resources prior to bootstrapping the manager'
+                            },
+                            '--validate-only': {
+                                'dest': 'validate_only',
+                                'action': 'store_true',
+                                'help': 'Run validations without '
+                                        'actually performing the bootstrap process'
+                            },
+                            '--install-plugins': install_plugins_argument(),
+                            '--task-retries': task_retries_argument(5),
+                            '--task-retry-interval': task_retry_interval_argument(30),
+                            '--task-thread-pool-size':
+                                task_thread_pool_size_argument()
+                        },
+                        'handler': cfy.bootstrap
+                    }
+                }
             },
             'teardown': {
                 'help': 'Teardown Cloudify',

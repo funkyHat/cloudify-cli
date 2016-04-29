@@ -13,8 +13,17 @@
 #    * See the License for the specific language governing permissions and
 #    * limitations under the License.
 
+import os
+import glob
+
 from setuptools import setup
 
+data_files = []
+directories = glob.glob(os.path.join(
+    'cloudify_cli', 'resources?', 'manager-blueprint??'))
+for directory in directories:
+    files = glob.glob(directory + '*')
+    data_files.append((directory, files))
 
 setup(
     name='cloudify',
@@ -34,6 +43,7 @@ setup(
             'bootstrap/resources/install_plugins.sh.template'
         ],
     },
+    data_files=data_files,
     license='LICENSE',
     description='Cloudify CLI',
     entry_points={
