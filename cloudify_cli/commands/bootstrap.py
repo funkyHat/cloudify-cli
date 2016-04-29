@@ -21,8 +21,8 @@ import os
 import sys
 
 from cloudify_cli import utils
-from cloudify_cli.bootstrap import bootstrap as bs
 from cloudify_cli.logger import get_logger
+from cloudify_cli.bootstrap import bootstrap as bs
 
 
 def _get_manager_blueprint_path(env):
@@ -52,13 +52,14 @@ def bootstrap(keep_up,
 
     if env and blueprint_path:
         raise RuntimeError('Choose one of `env` or `blueprint_path`.')
-    if not env:
-        if keep_up and not blueprint_path:
-            logger.warning('Bootstrapping on existing machine - '
-                           'ignoring --keep-up-on-failure...')
-        blueprint_path = _get_manager_blueprint_path('simple')
-    elif not blueprint_path:
-        blueprint_path = _get_manager_blueprint_path(env)
+    if not blueprint_path:
+        if not env:
+            if keep_up and not blueprint_path:
+                logger.warning('Bootstrapping on existing machine - '
+                               'ignoring --keep-up-on-failure...')
+            blueprint_path = _get_manager_blueprint_path('simple')
+        else:
+            blueprint_path = _get_manager_blueprint_path(env)
 
     # verifying no environment exists from a previous bootstrap
     try:
