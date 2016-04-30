@@ -1032,9 +1032,9 @@ def parser_config():
             'bootstrap': {
                 'help': 'Bootstrap a Cloudify Manager',
                 'arguments': {
-                    '-e,--env': {
-                        'dest': 'env',
-                        'help': 'Environment to bootstrap on.'
+                    '--provider': {
+                        'dest': 'provider',
+                        'help': 'Cloud Provider to bootstrap on.'
                     },
                     '-p,--blueprint-path': {
                         'dest': 'blueprint_path',

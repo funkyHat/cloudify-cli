@@ -43,23 +43,23 @@ def bootstrap(keep_up,
               task_retries,
               task_retry_interval,
               task_thread_pool_size,
-              env=''):
+              provider=''):
     logger = get_logger()
     env_name = 'manager'
 
     # Verify directory is initialized
     utils.get_context_path()
 
-    if env and blueprint_path:
-        raise RuntimeError('Choose one of `env` or `blueprint_path`.')
+    if provider and blueprint_path:
+        raise RuntimeError('Choose one of `provider` or `blueprint_path`.')
     if not blueprint_path:
-        if not env:
-            if keep_up and not blueprint_path:
+        if not provider:
+            if keep_up:
                 logger.warning('Bootstrapping on existing machine - '
                                'ignoring --keep-up-on-failure...')
             blueprint_path = _get_manager_blueprint_path('simple')
         else:
-            blueprint_path = _get_manager_blueprint_path(env)
+            blueprint_path = _get_manager_blueprint_path(provider)
 
     # verifying no environment exists from a previous bootstrap
     try:
@@ -108,11 +108,11 @@ def bootstrap(keep_up,
                 ws_settings.set_rest_port(details['rest_port'])
                 ws_settings.set_protocol(details['protocol'])
 
-            logger.info('bootstrapping complete')
-            logger.info('management server is up at {0}'.format(manager_ip))
+            logger.info('Bootstrap Complete!')
+            logger.info('Cloudify Manager is up at {0}'.format(manager_ip))
         except Exception as ex:
             tpe, value, traceback = sys.exc_info()
-            logger.error('bootstrap failed! ({0})'.format(str(ex)))
+            logger.error('Bootstrap failed! ({0})'.format(str(ex)))
             if not keep_up:
                 try:
                     bs.load_env(env_name)
@@ -121,9 +121,9 @@ def bootstrap(keep_up,
                     # even initialized - nothing to teardown.
                     pass
                 else:
-                    logger.info('executing teardown due to failed bootstrap')
+                    logger.info('Executing teardown due to failed bootstrap')
                     bs.teardown(name=env_name,
                                 task_retries=5,
                                 task_retry_interval=30,
                                 task_thread_pool_size=1)
-            # raise tpe, value, traceback
+            raise tpe, value, traceback
