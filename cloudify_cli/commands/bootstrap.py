@@ -43,7 +43,7 @@ def bootstrap(keep_up,
               task_retries,
               task_retry_interval,
               task_thread_pool_size,
-              provider=''):
+              provider):
     logger = get_logger()
     env_name = 'manager'
 
@@ -88,7 +88,7 @@ def bootstrap(keep_up,
 
     if not validate_only:
         try:
-            logger.info('executing bootstrap')
+            logger.info('Executing bootstrap...')
             details = bs.bootstrap(
                 blueprint_path,
                 name=env_name,
