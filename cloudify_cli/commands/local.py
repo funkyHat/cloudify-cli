@@ -17,20 +17,25 @@
 Handles all commands that start with 'cfy local'
 """
 
+import os
 import json
 import shutil
-import os
+
+from wagon import wagon
+from wagon.wagon import logger
 
 from cloudify.workflows import local
-from cloudify_cli import exceptions
-from cloudify_cli import common
+
 from cloudify_cli import utils
+from cloudify_cli import common
+from cloudify_cli import exceptions
 from cloudify_cli.logger import get_logger
+from cloudify_cli.cli import get_global_verbosity
 from cloudify_cli.commands import init as cfy_init
 from cloudify_cli.constants import DEFAULT_BLUEPRINT_PATH
-from cloudify_cli.constants import DEFAULT_INPUTS_PATH_FOR_INSTALL_COMMAND
 from cloudify_cli.constants import DEFAULT_INSTALL_WORKFLOW
 from cloudify_cli.constants import DEFAULT_UNINSTALL_WORKFLOW
+from cloudify_cli.constants import DEFAULT_INPUTS_PATH_FOR_INSTALL_COMMAND
 
 
 _NAME = 'local'
@@ -176,9 +181,14 @@ def instances(node_id):
                            indent=2))
 
 
-def install_plugins(blueprint_path):
-    common.install_blueprint_plugins(
-        blueprint_path=blueprint_path)
+def install_plugins(blueprint_path, wagon_path):
+    if blueprint_path:
+        common.install_blueprint_plugins(
+            blueprint_path=blueprint_path)
+    if wagon_path:
+        # wagon_path is a list of wagons
+        for _wagon in wagon_path:
+            _install_wagon(_wagon)
 
 
 def create_requirements(blueprint_path, output):
@@ -228,3 +238,18 @@ def _load_env():
         raise error
     return local.load_env(name=_NAME,
                           storage=_storage())
+
+
+def _install_wagon(wagon_path):
+    logger.configure()
+    wagon_installer = wagon.Wagon(wagon_path, verbose=get_global_verbosity())
+    try:
+        # if virtualenv is not available in the environment,
+        # it shouldn't fail the installation.
+        # the validation should not be considered mandatory.
+        import virtualenv  # NOQA
+        wagon_installer.validate()
+    except ImportError:
+        pass
+    wagon_installer.install(upgrade=False, ignore_platform=False)
+    get_logger()

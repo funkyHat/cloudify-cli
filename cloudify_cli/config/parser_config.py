@@ -371,7 +371,7 @@ def parser_config():
                                 'dest': 'plugin_path',
                                 'type': argparse.FileType(),
                                 'required': True,
-                                'help': 'Path to a plugin Wagon (`.wgn` file)',
+                                'help': 'URL or Local Path to a Cloudify Plugin (`.wgn` file)',
                                 'completer': completion_utils.yaml_files_completer
                             }
                         },
@@ -918,10 +918,17 @@ def parser_config():
                     'install-plugins': {
                         'help': 'Install the necessary plugins for a given blueprint',
                         'arguments': {
-                            '-p,--blueprint-path':
-                                local_blueprint_path_argument(
-                                        hlp='Path to a blueprint'
-                                ),
+                            '-p,--blueprint-path': {
+                                'dest': 'blueprint_path',
+                                'help': 'Path to a blueprint'
+                            },
+                            '-w,--wagon-path': {
+                                'metavar': 'WAGON_PATH',
+                                'dest': 'wagon_path',
+                                'action': 'append',
+                                'help': 'URL or Local Path to a plugin Wagon (`.wgn` file) '
+                                'This can be used multiple times.',
+                            },
                         },
                         'handler': cfy.local.install_plugins
                     },
