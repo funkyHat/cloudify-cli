@@ -17,12 +17,12 @@
 Tests all commands that start with 'cfy blueprints'
 """
 
-import logging
-import sys
 import os
+import sys
 import json
-import tempfile
 import shutil
+import logging
+import tempfile
 
 import yaml
 import nose
@@ -30,30 +30,30 @@ from mock import patch
 
 from dsl_parser import exceptions as parser_exceptions
 
+import cloudify.logs
 import cloudify.utils
 import cloudify.exceptions
-import cloudify.logs
-from cloudify.decorators import operation, workflow
 from cloudify import ctx as op_ctx
-from cloudify.exceptions import CommandExecutionException
-from cloudify.workflows import ctx as workflow_ctx
-from cloudify.workflows import tasks as workflow_tasks
 from dsl_parser.constants import HOST_TYPE
+from cloudify.workflows import ctx as workflow_ctx
+from cloudify.decorators import operation, workflow
+from cloudify.workflows import tasks as workflow_tasks
+from cloudify.exceptions import CommandExecutionException
 
 from cloudify_cli import utils
 from cloudify_cli import common
 from cloudify_cli.commands import local
 from cloudify_cli.tests import cli_runner
+from cloudify_cli.tests.commands import utils as test_utils
 from cloudify_cli.tests.commands.test_cli_command import CliCommandTest
 from cloudify_cli.tests.commands.test_cli_command import \
     (BLUEPRINTS_DIR,
      TEST_WORK_DIR)
-from cloudify_cli.constants import DEFAULT_BLUEPRINT_PATH
 from cloudify_cli.constants import DEFAULT_PARAMETERS
-from cloudify_cli.constants import DEFAULT_TASK_THREAD_POOL_SIZE
+from cloudify_cli.constants import DEFAULT_BLUEPRINT_PATH
 from cloudify_cli.constants import DEFAULT_INSTALL_WORKFLOW
 from cloudify_cli.constants import DEFAULT_UNINSTALL_WORKFLOW
-from cloudify_cli.tests.commands import utils as test_utils
+from cloudify_cli.constants import DEFAULT_TASK_THREAD_POOL_SIZE
 
 
 class LocalTest(CliCommandTest):
