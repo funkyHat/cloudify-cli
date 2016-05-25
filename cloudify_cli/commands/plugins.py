@@ -65,9 +65,9 @@ def delete(plugin_id, force):
 
 
 def upload(plugin_path):
-    server_ip = utils.get_rest_host()
-    utils.upload_plugin(plugin_path, server_ip,
-                        utils.get_rest_client(server_ip), validate)
+    rest_host = utils.get_rest_host()
+    utils.upload_plugin(plugin_path, utils.get_rest_client(rest_host),
+                        validate)
 
 
 def download(plugin_id,
