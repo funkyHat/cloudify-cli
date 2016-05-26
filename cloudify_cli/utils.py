@@ -349,21 +349,14 @@ def get_rest_client(rest_host=None, rest_port=None, rest_protocol=None,
         trust_all = get_ssl_trust_all()
 
     cert = get_ssl_cert()
-    with open('/tmp/version.log', 'a') as verlog:
-        verlog.write('creating cloudify client\n')
     client = CloudifyClient(host=rest_host, port=rest_port,
                             protocol=rest_protocol, headers=headers,
                             cert=cert, trust_all=trust_all)
-    with open('/tmp/version.log', 'a') as verlog:
-        verlog.write('cloudify client created\n')
 
     if skip_version_check:
         return client
 
-    with open('/tmp/version.log', 'a') as verlog:
-        verlog.write('getting cli and manager versions\n')
     cli_version, manager_version = get_cli_manager_versions(client)
-
     if cli_version == manager_version:
         return client
     elif not manager_version:
@@ -399,16 +392,12 @@ def get_rest_protocol():
     return cosmo_wd_settings.get_rest_protocol()
 
 
-def get_rest_host():
-    return get_management_server_ip()
-
-
 def get_rest_server_public_certificate():
     cosmo_wd_settings = load_cloudify_working_dir_settings()
     return cosmo_wd_settings.get_rest_server_public_certificate()
 
 
-def get_management_server_ip():
+def get_rest_host():
     cosmo_wd_settings = load_cloudify_working_dir_settings()
     rest_host = cosmo_wd_settings.get_management_server()
     if rest_host:
@@ -418,6 +407,9 @@ def get_management_server_ip():
            "management server or provide a management "
            "server ip explicitly")
     raise CloudifyCliError(msg)
+
+
+get_management_server_ip = get_rest_host
 
 
 def get_username():
@@ -712,5 +704,5 @@ class CloudifyConfig(object):
 
 def build_manager_host_string(user='', ip=''):
     user = user or get_management_user()
-    ip = ip or get_rest_host()
+    ip = ip or get_management_server_ip()
     return '{0}@{1}'.format(user, ip)

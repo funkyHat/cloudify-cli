@@ -135,8 +135,8 @@ def _validate_credentials_are_set():
     if not set(cred_env_vars).issubset(os.environ.keys()):
         raise CloudifyBootstrapError(
             'The following environment variables must be set before '
-            'bootstrapping a secured manager: {0}'.
-            format(', '.join(cred_env_vars)))
+            'bootstrapping a secured manager: {0}'
+            .format(', '.join(cred_env_vars)))
 
 
 def bootstrap_validation(blueprint_path,
@@ -167,11 +167,8 @@ def bootstrap_validation(blueprint_path,
         ]
         raise
 
-    manager_config_properties = next(
-        node_template['properties'] for node_template
-        in env.plan.node_templates
-        if node_template['name'] == 'manager_configuration')
-    security_enabled = manager_config_properties['security']['enabled']
+    manager_config_node = env.storage.get_node('manager_configuration')
+    security_enabled = manager_config_node.properties['security']['enabled']
     if security_enabled:
         _validate_credentials_are_set()
 
@@ -314,12 +311,6 @@ def bootstrap(blueprint_path,
         manager_ip = env.outputs()['manager_ip']
         manager_user = manager_node.properties['ssh_user']
         manager_key_path = manager_node.properties['ssh_key_filename']
-        # security_config = manager_node.properties['security']
-        # security_enabled = security_config.get('enabled', False)
-        # rest_username = security_config['admin_username'] \
-        #     if security_enabled else None
-        # rest_password = security_config['admin_password'] \
-        #     if security_enabled else None
 
         fabric_env = {
             "host_string": manager_ip,
@@ -367,9 +358,7 @@ def bootstrap(blueprint_path,
         'manager_user': manager_user,
         'manager_key_path': manager_key_path,
         'rest_port': rest_port,
-        'rest_protocol': rest_protocol,
-        'rest_server_public_certificate':
-            env.outputs()['rest_server_public_certificate']
+        'rest_protocol': rest_protocol
     }
 
 
@@ -419,7 +408,6 @@ def recover(snapshot_path,
                                                    manager_node)
 
     logger = get_logger()
-    # TODO: should we use TrustAll=True? what about skipping version check?
     client = utils.get_rest_client(manager_ip)
     _handle_provider_context(
         rest_client=client,
