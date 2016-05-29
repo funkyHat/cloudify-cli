@@ -392,11 +392,6 @@ def get_rest_protocol():
     return cosmo_wd_settings.get_rest_protocol()
 
 
-def get_rest_server_public_certificate():
-    cosmo_wd_settings = load_cloudify_working_dir_settings()
-    return cosmo_wd_settings.get_rest_server_public_certificate()
-
-
 def get_rest_host():
     cosmo_wd_settings = load_cloudify_working_dir_settings()
     rest_host = cosmo_wd_settings.get_management_server()

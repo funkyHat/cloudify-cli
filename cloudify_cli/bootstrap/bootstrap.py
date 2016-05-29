@@ -333,7 +333,8 @@ def bootstrap(blueprint_path,
                                             rest_port=rest_port,
                                             rest_protocol=rest_protocol,
                                             username=utils.get_username(),
-                                            password=utils.get_password())
+                                            password=utils.get_password(),
+                                            skip_version_check=True)
 
         provider_context = _handle_provider_context(
             rest_client=rest_client,
