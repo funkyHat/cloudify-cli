@@ -348,7 +348,7 @@ def get_rest_client(rest_host=None, rest_port=None, rest_protocol=None,
     if trust_all is None:
         trust_all = get_ssl_trust_all()
 
-    cert = get_ssl_cert()
+    cert = get_ssl_cert() if rest_protocol == 'https' else None
     client = CloudifyClient(host=rest_host, port=rest_port,
                             protocol=rest_protocol, headers=headers,
                             cert=cert, trust_all=trust_all)
